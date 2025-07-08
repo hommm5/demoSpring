@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -73,5 +74,42 @@ class RunControllerTest {
     void shouldReturnNotFoundWithInvalidId() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/api/runs/99"))
                 .andExpect(status().isNotFound());
+    }
+    @Test
+    void shouldCreateNewRun() throws Exception {
+        var run = new Run(null,
+                "test",
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                1,
+                Location.INDOOR,
+                null);
+
+        mvc.perform(MockMvcRequestBuilders.post("/api/runs")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(run)))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void shouldUpdateRun() throws Exception {
+        var run = new Run(null,
+                "test",
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                1,
+                Location.INDOOR,
+                null);
+
+        mvc.perform(MockMvcRequestBuilders.put("/api/runs/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(run)))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void shouldDeleteRun() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.delete("api/runs/1"))
+                .andExpect(status().isNoContent());
     }
 }
