@@ -41,6 +41,7 @@ public class DemoApplication {
 
             repo.insertGeo(firstUser);
             repo.insertCompany(firstUser);
+            repo.insertAddress(firstUser);
 
 
 

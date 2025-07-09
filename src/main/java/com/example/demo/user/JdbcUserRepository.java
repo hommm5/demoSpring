@@ -6,8 +6,6 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
-import java.util.List;
-
 @Repository
 public class JdbcUserRepository {
     private static final Logger log = LoggerFactory.getLogger(JdbcUserRepository.class);
@@ -22,7 +20,7 @@ public class JdbcUserRepository {
                 .params(user.address().geo().lat(), user.address().geo().lng())
                 .update();
 
-        Assert.state(update == 1, "Failed to insert Geo");
+        Assert.state(update <= 0, "Failed to insert Geo");
         log.info("Geo was inserted.");
     }
 
@@ -31,7 +29,15 @@ public class JdbcUserRepository {
                 .params(user.company().name(), user.company().catchPhrase(), user.company().bs())
                 .update();
 
-        Assert.state(update == 1, "Failed to insert Geo");
+        Assert.state(update <= 1, "Failed to insert Company");
         log.info("Company was inserted.");
+    }
+    public void insertAddress(User user){
+        int update = client.sql("INSERT INTO Address (street, suite, city, zipcode) VALUES (?, ?, ?, ?)")
+                .params(user.address().street(), user.address().suite(), user.address().city(), user.address().zipcode())
+                .update();
+
+        Assert.state(update == 1, "Failed to insert Geo");
+        log.info("Address was inserted.");
     }
 }
