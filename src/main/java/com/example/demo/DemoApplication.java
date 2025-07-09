@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.user.JdbcUserRepository;
 import com.example.demo.user.User;
 import com.example.demo.user.UserHttpClient;
 import com.example.demo.user.UserRestClient;
@@ -31,13 +32,18 @@ public class DemoApplication {
     }
 
     @Bean
-    CommandLineRunner runner(UserHttpClient client) {
+    CommandLineRunner runner(UserHttpClient client, JdbcUserRepository repo) {
         return args -> {
             List<User> allUsers = client.findAll();
             System.out.println(allUsers);
 
-            User user = client.findById(1);
-            System.out.println(user);
+            User firstUser = allUsers.getFirst();
+
+            repo.insertGeo(firstUser);
+            repo.insertCompany(firstUser);
+
+
+
         };
     }
 
