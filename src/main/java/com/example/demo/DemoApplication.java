@@ -43,10 +43,11 @@ public class DemoApplication {
 
             User firstUser = allUsers.getFirst();
 
-            Integer id = repo.insertGeo(firstUser);
-            log.info("The id is {}", id);
-            repo.insertCompany(firstUser);
-            repo.insertAddress(firstUser);
+            Integer geoId = repo.insertGeo(firstUser);
+            log.info("The id is {}", geoId);
+            Integer companyId = repo.insertCompany(firstUser);
+            log.info("The id is {}", companyId);
+            Integer addressId = repo.insertAddress(firstUser, geoId);
 
 
 

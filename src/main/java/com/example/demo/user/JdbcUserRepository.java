@@ -23,26 +23,28 @@ public class JdbcUserRepository {
 
 
         log.info("Geo was inserted.");
-
         return Integer.parseInt(returnedObject);
 
     }
 
-    public void insertCompany(User user) {
-        int update = client.sql("INSERT INTO Company (name, catchPhrase, bs) VALUES (?, ?, ?)")
+    public Integer insertCompany(User user) {
+        String returnedObject = client.sql("INSERT INTO Company (name, catchPhrase, bs) VALUES (?, ?, ?) RETURNING id")
                 .params(user.company().name(), user.company().catchPhrase(), user.company().bs())
-                .update();
+                .query()
+                .singleValue().toString();
 
-        Assert.state(update == 1, "Failed to insert Company");
         log.info("Company was inserted.");
+        return Integer.parseInt(returnedObject);
     }
 
-    public void insertAddress(User user) {
-        int update = client.sql("INSERT INTO Address (street, suite, city, zipcode) VALUES (?, ?, ?, ?)")
-                .params(user.address().street(), user.address().suite(), user.address().city(), user.address().zipcode())
-                .update();
+    public Integer insertAddress(User user, Integer id) {
+        String returnedObject = client.sql("INSERT INTO Address (street, suite, city, zipcode, geo_id) VALUES (?, ?, ?, ?, ?) RETURNING id")
+                .params(user.address().street(), user.address().suite(), user.address().city(), user.address().zipcode(), id)
+                .query()
+                .singleValue().toString();
 
-        Assert.state(update == 1, "Failed to insert Address");
         log.info("Address was inserted.");
+
+        return Integer.parseInt(returnedObject);
     }
 }

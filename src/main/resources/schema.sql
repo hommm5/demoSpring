@@ -1,20 +1,21 @@
-/*DROP TABLE IF EXISTS "user";
+DROP TABLE IF EXISTS "user";
 DROP TABLE IF EXISTS "address";
 DROP TABLE IF EXISTS "geo";
-DROP TABLE IF EXISTS "company";*/
+DROP TABLE IF EXISTS "company";
+
+CREATE TABLE IF NOT EXISTS Geo(
+    id SERIAL PRIMARY KEY,
+    lat varchar(255) NOT NULL,
+    lng varchar(255) NOT NULL
+    );
 
 CREATE TABLE IF NOT EXISTS Address(
     id SERIAL PRIMARY KEY,
     street varchar(255) NOT NULL,
     suite varchar(255) NOT NULL,
     city varchar(255) NOT NULL,
-    zipcode varchar(255) NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS Geo(
-    id SERIAL PRIMARY KEY,
-    lat varchar(255) NOT NULL,
-    lng varchar(255) NOT NULL
+    zipcode varchar(255) NOT NULL,
+    geo_id INT REFERENCES Geo(id)
 );
 
 CREATE TABLE IF NOT EXISTS Company(
