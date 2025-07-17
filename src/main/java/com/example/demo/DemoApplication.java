@@ -3,7 +3,6 @@ package com.example.demo;
 import com.example.demo.user.JdbcUserRepository;
 import com.example.demo.user.User;
 import com.example.demo.user.UserHttpClient;
-import com.example.demo.user.UserRestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -38,17 +37,21 @@ public class DemoApplication {
     @Bean
     CommandLineRunner runner(UserHttpClient client, JdbcUserRepository repo) {
         return args -> {
-            List<User> allUsers = client.findAll();
-            System.out.println(allUsers);
+            List<User> allUsersFromHttpClient = client.findAll();
 
-            User firstUser = allUsers.getFirst();
+            System.out.println(allUsersFromHttpClient);
 
-            Integer geoId = repo.insertGeo(firstUser);
-            log.info("The id is {}", geoId);
-            Integer companyId = repo.insertCompany(firstUser);
-            log.info("The id is {}", companyId);
-            Integer addressId = repo.insertAddress(firstUser, geoId);
+            for (User currentUser : allUsersFromHttpClient) {
+                Integer geoId = repo.insertGeo(currentUser);
+                log.info("The id is {}", geoId);
+                Integer companyId = repo.insertCompany(currentUser);
+                log.info("The id is {}", companyId);
+                Integer addressId = repo.insertAddress(currentUser, geoId);
+                repo.insertUser(currentUser, addressId, companyId);
+            }
 
+            List<User> usersFromDB = client.findAll();
+            System.out.println(usersFromDB);
 
 
         };
